@@ -1,0 +1,7 @@
+{
+  "name": "fs-uri",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
