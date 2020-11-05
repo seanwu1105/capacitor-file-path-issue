@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Capacitor, FilesystemDirectory, Plugins } from '@capacitor/core';
 
 const { Filesystem } = Plugins;
@@ -11,9 +12,12 @@ const { Filesystem } = Plugins;
 export class HomePage implements OnInit {
 
   src = '';
+  sanitizedSrc: SafeUrl;
   base64Src = '';
 
-  constructor() { }
+  constructor(
+    private readonly sanitizer: DomSanitizer
+  ) { }
 
   async ngOnInit() {
     const writeResult = await Filesystem.writeFile({
@@ -23,6 +27,7 @@ export class HomePage implements OnInit {
       recursive: true
     });
     this.src = Capacitor.convertFileSrc(writeResult.uri);
+    this.sanitizedSrc = this.sanitizer.bypassSecurityTrustUrl(Capacitor.convertFileSrc(writeResult.uri));
     const readResult = await Filesystem.readFile({
       directory: FilesystemDirectory.Data,
       path: 'demo'
